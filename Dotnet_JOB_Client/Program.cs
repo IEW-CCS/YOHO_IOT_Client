@@ -114,7 +114,7 @@ namespace Dotnet_JOB_Client
 
                 try
                 {
-                    Console.WriteLine("Welcome DotNet Core C# MQTT Client");
+                    Console.WriteLine("Welcome DotNet Core C# MQTT Client V1.0.2");
 
                     //-  5.1 Setting Mqtt Topic 
                     Register_Topic =  Config["Basic"]["Register_Topic"].ToString();
