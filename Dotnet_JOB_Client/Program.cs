@@ -222,9 +222,11 @@ namespace Dotnet_JOB_Client
 
             string topic = e.ApplicationMessage.Topic;
             string message = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+            string datetimestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
-            Console.WriteLine("MQTT Message Arriver : Topic :" + topic.ToString());
-            log.InfoFormat("[{0}] {2}-({1})", "Program", MethodBase.GetCurrentMethod().Name, "MQTT Message Arriver : Topic :" + topic.ToString());
+            Console.WriteLine(datetimestamp + " MQTT Message Arriver : Topic :" + topic.ToString());
+            log.InfoFormat("{0} [{1}] {3}-({2})", datetimestamp, "Program", MethodBase.GetCurrentMethod().Name, "MQTT Message Arriver : Topic :" + topic.ToString());
+
 
             if (topic == Register_Topic)
             {
@@ -240,6 +242,8 @@ namespace Dotnet_JOB_Client
                // log.DebugFormat("[{0}] {2}-({1})", "Program", MethodBase.GetCurrentMethod().Name, "TOPIC : " + topic.ToString() + "Out of handle list so Skip this Message");
                // Console.WriteLine("TOPIC : " + topic.ToString() + "out of handle list");
             }   
+
+
         }
 
         // ---------- This is function is put message to MQTT Broker 
@@ -449,6 +453,7 @@ namespace Dotnet_JOB_Client
             catch (Exception ex)
             {
                 log.ErrorFormat("[{0}] {2}-({1})", "Program", MethodBase.GetCurrentMethod().Name, "Process Faild ex : " + ex.Message);
+                log.ErrorFormat("[{0}] {2}-({1})", "Program", MethodBase.GetCurrentMethod().Name, "Message Payload  : " + message);
                 Console.WriteLine(ex.Message);
             }
         }
@@ -626,10 +631,17 @@ namespace Dotnet_JOB_Client
                         oIoT_DeviceEDC.data_value_29 = _msg.B10_S.ToString();
 
                         //---------Add New Feture  20191101 -------
-                        oIoT_DeviceEDC.data_value_30 = _msg.BridgeUUID.ToString();
+                        if (!String.IsNullOrEmpty(_msg.BridgeUUID))
+                        {
+                            oIoT_DeviceEDC.data_value_30 = _msg.BridgeUUID.ToString();
+                        }
+
                         oIoT_DeviceEDC.data_value_31 = _msg.RSSI.ToString();
                         oIoT_DeviceEDC.data_value_32 = _msg.Channel.ToString();
-                        oIoT_DeviceEDC.data_value_33 = _msg.NodeUUID.ToString();
+                        if (!String.IsNullOrEmpty(_msg.NodeUUID))
+                        {
+                            oIoT_DeviceEDC.data_value_33 = _msg.NodeUUID.ToString();
+                        }
 
                         oIoT_DeviceEDC.clm_date_time = _msg.TimeStamp;
                         oIoT_DeviceEDC.clm_user = "SYSADM";
@@ -645,6 +657,8 @@ namespace Dotnet_JOB_Client
             {
                 log.ErrorFormat("[{0}] {2}-({1})", "Program", MethodBase.GetCurrentMethod().Name, "Update_DB Faild ex : " + ex.Message);
                 Console.WriteLine(ex.Message);
+                _IOT_DB.Clear(); // kill all IOT DB Body 
+                log.ErrorFormat("[{0}] {2}-({1})", "Program", MethodBase.GetCurrentMethod().Name, "Becouse Update_DB Faild so Clear All IOT DB Queue");
             }
 
         }

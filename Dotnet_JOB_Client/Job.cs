@@ -235,7 +235,7 @@ namespace Dotnet_JOB_Client
             string TempStr = string.Empty;
             int lspec_count = 0, uspec_count = 0, OOS_count = 0;
 
-            // by chris 20190401 add spec check list 
+            // 20190401 add spec check list 
             ConcurrentDictionary<string, Tuple<double, double>> Spcecheck = Program._EDC_Item_Spec[_PointID];
 
 
